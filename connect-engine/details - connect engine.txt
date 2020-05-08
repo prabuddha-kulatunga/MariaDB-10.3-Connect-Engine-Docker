@@ -35,9 +35,5 @@ in container:
 		/* SQL Error (1296): Got error 174 'Connecting: java.lang.NullPointerException rc=-3' from CONNECT */
 
 		replace JdbcInterface.jar and JavaWrappers.jar files and restart container..
-		
-		add connect_work_size=64M (value should change) to connect.cnf file. ( have to change everytime before use connect tables)
-		reference:-
-			https://mariadb.com/kb/en/connect-how-to-troubleshoot-error-1296-hy000-got-error-122-cannot-retrieve-/
 
 restart container.
