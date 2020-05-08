@@ -1,0 +1,43 @@
+in container:
+	apt update
+	apt install openjdk-8-jdk
+	export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+	do as follow link,
+		https://downloads.mariadb.org/mariadb/repositories/#distro=Ubuntu&distro_release=bionic--ubuntu_bionic&mirror=hostag&version=10.3
+		
+		basically type,
+			apt-get install software-properties-common
+			apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+			add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mirror.host.ag/mariadb/repo/10.3/ubuntu bionic main'
+			apt update
+		
+	apt-get install mariadb-plugin-connect
+
+in heidi sql:
+	INSTALL SONAME 'ha_connect';
+	SHOW ENGINES;
+	SHOW PLUGINS;
+
+	when run INSTALL SONAME 'ha_connect'; if get error,
+	 SQL Error (1062): Duplicate entry 'CONNECT' for key 'PRIMARY' INSTALL SONAME 'ha_connect
+	run below one and run INSTALL SONAME 'ha_connect'; again.
+		DELETE FROM mysql.plugin WHERE name = "CONNECT"
+
+
+in container:
+	download dremio jdbc jar and copy to /usr/lib/jvm/java-1.8.0-openjdk-amd64/jre/lib/ext/ path. 
+	copy JavaWrappers.jar and JdbcInterface.jar to /usr/lib/mysql/plugin path. ( DON'T use below link to download those, https://jira.mariadb.org/browse/MDEV-10936) use jars in file path.
+	open /etc/mysql/mariadb.conf.d/connect.cnf file and add,
+		connect_jvm_path="/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre/lib/amd64/server"
+		connect_class_path="/usr/lib/mysql/plugin:/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre/lib/ext/dremio-jdbc-driver.jar"
+
+	if u get below error,
+		/* SQL Error (1296): Got error 174 'Connecting: java.lang.NullPointerException rc=-3' from CONNECT */
+
+		replace JdbcInterface.jar and JavaWrappers.jar files and restart container..
+		
+		add connect_work_size=64M (value should change) to connect.cnf file. ( have to change everytime before use connect tables)
+		reference:-
+			https://mariadb.com/kb/en/connect-how-to-troubleshoot-error-1296-hy000-got-error-122-cannot-retrieve-/
+
+restart container.

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  connect_engine: 
+    build: .
+    image: mariadb-connect:1
+    container_name: connect
+    ports:
+      - 3336:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./connectData:/var/lib/mysql
+      - ./connect.cnf:/etc/mysql/mariadb.conf.d/connect.cnf
+    restart: always
