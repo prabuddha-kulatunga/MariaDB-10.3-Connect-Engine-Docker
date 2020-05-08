@@ -1,6 +1,6 @@
 FROM mariadb:10.3
 
-LABEL author="prabuddha.kulatunga@mcmedisoft.com"
+LABEL author="prabuddha.kulatunga@gmail.com"
 LABEL version="1.0"
 
 RUN apt update && apt install openjdk-8-jdk -y && export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
